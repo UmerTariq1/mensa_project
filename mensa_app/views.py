@@ -34,6 +34,10 @@ def menu_list(request):
         menu_items = MenuItem.objects.all()
 
         for menu_item in menu_items:
+
+            # see how many ratings the menu item has
+            menu_item.num_ratings = menu_item.rating_set.count()
+            
             avg_rating = menu_item.rating_set.aggregate(Avg('rating'))['rating__avg']
             menu_item.avg_rating = avg_rating if avg_rating is not None else 0
             # 2 decimanl points

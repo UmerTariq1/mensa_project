@@ -83,17 +83,17 @@
                         <div class="menu-item-rating">
                             <p>Average Rating:</p>
                             {% if menu_item.avg_rating != 0 %}
-                            <p>{{ menu_item.avg_rating }}</p>
+                                <p>{{ menu_item.avg_rating }}</p>
 
-                            <div class="stars">
-                                {% for star_value in menu_item.stars_range %}
-                                    {% if menu_item.avg_rating >= star_value  %}
-                                        <span class="filled">&#9733;</span>
-                                    {% else %}
-                                        <span>&#9734;</span>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
+                                <div class="stars">
+                                    {% for star_value in menu_item.stars_range %}
+                                        {% if menu_item.avg_rating >= star_value  %}
+                                            <span class="filled">&#9733;</span>
+                                        {% else %}
+                                            <span>&#9734;</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
                             {% elif menu_item.avg_rating == 0 %}
                                 <p style="color: red;">Not rated yet</p>
                             {% endif %}
@@ -111,19 +111,36 @@
                                     {% endif %}
 
                                     <div class="stars" data-menu-item-id="{{ menu_item.id }}">
-                                        {% for star_value in menu_item.stars_range %}
-                                        <span class="star" data-value="{{ star_value }}">&#9734;</span>
-                                        {% endfor %}
+
+                                        <div class="stars" data-menu-item-id="{{ menu_item.id }}">
+                                            {% for star_value in menu_item.stars_range %}
+                                                <span class="star" data-value="{{ star_value }}">&#9734;</span>
+                                            {% endfor %}
+                                        </div>
+
+                                        {% comment %} <div class="stars">
+                                            {% for star_value in menu_item.stars_range %}
+                                                {% if menu_item.user_rating >= star_value  %}
+                                                    <span class="star" data-value="{{ star_value }}">&#9733;</span>
+                                                {% else %}
+                                                    <span class="star" data-value="{{ star_value }}">&#9734;</span>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div> {% endcomment %}
                                     </div>
                                 </div> 
                                 
                                 {% if request.user.is_authenticated %}
-                                <input type="hidden" name="menu_item_id" value="{{ menu_item.id }}">
-                                <input type="hidden" id="rating_value_hidden" name="rating" value="">
-                                <button type="submit" id ="rating_submit_btn" style="display: none;">Rate</button>
+                                    <input type="hidden" name="menu_item_id" value="{{ menu_item.id }}">
+                                    <input type="hidden" id="rating_value_hidden" name="rating" value="">
+                                    <button type="submit" id ="rating_submit_btn" style="display: none;">Rate</button>
                                 {% endif %}
                             </form>
                         {% endif %}
+
+                        {% comment %} show the num_ratings {% endcomment %}
+                        <div class="menu-item-rating">
+                        </div>
                         
                     </div>
                 </div>
@@ -213,11 +230,21 @@
             $(this).nextAll('.star').html('&#9734;');
         }, function() {
             var menuItemId = $(this).parent().data('menu-item-id');
-            var userRating = $('p[data-menu-item-id="' + menuItemId + '"]').text().trim(); // Get user rating
-            $('.star').each(function() {
+            //var userRating = $('p[data-menu-item-id="' + menuItemId + '"]').text().trim(); // Get user rating
+            //var userRating = $('div[data-menu-item-id="' + menuItemId + '"]').attr('data-user-rating');
+            //var userRating = $('.stars[data-menu-item-id="' + menuItemId + '"] p').text().trim(); // Get user rating of the specific menu item
+            var userRating = $('div[data-menu-item-id="' + menuItemId + '"] .stars').first().attr('data-user-rating');
+            
+            var $menuStars = $(this).parent().find('.star');
+
+            $menuStars.each(function() {
                 var starValue = $(this).data('value');
-                if (starValue > userRating) {
-                    $(this).html('&#9734;'); // Reset stars to original state
+
+                if (starValue <= userRating) {
+                    $(this).html('&#9733;'); // Reset stars to original state
+                }
+                else{
+                    $(this).html('&#9734;');
                 }
             });
         });
