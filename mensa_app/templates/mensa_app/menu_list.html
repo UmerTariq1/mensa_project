@@ -1,0 +1,239 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'mensa_app/css/menu_page.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="central_box">
+        {% if messages %}
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="list-style: none; color:red">{{ message }}</li>
+                {% endfor %}
+        {% endif %}
+
+        {% if not user.is_authenticated %}
+            <button class="signin_btn" id="signin-btn">Sign In</button>
+            <button class="signup_btn" id="signup-btn">Sign up</button>
+        {% else %}
+            <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+                <button type="submit" class="signin_btn">Logout</button>
+            </form>
+            
+            <h1>Welcome, {{ request.user.username }}</h1>
+        {% endif %}
+
+        <!-- Login Box -->
+        <div class="login-box signup-box" id="login-box">
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <h2>Sign in to your Existing account</h2>
+                
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username"><br>
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password"><br>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+
+        <div class="signup-box" id="signup-box">
+            <form method="post" action="{% url 'signup' %}">
+                {% csrf_token %}
+                <h2>Enter your username and password to create an account</h2>
+                <p>Your username should be a unique one. We suggest using university id.</p>
+                
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username"><br>
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password"><br>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
+
+        <!-- Overlay -->
+        <div class="overlay" id="overlay"></div>
+
+        <br>    
+
+        <h1>Mensa Menu Ratings</h1>
+        
+        <input type="text" id="search_bar" class="search_bar" placeholder="Search menu...">
+
+        {% if not user.is_authenticated %}
+            <h5 style="color:red; text-align: center;"> You are not logged in. Please log in to rate an item. </h5>
+        {% endif %}
+        {% comment %}  {% endcomment %}
+        <ul id="menu_list" class="menu_list"> 
+            <h4 type="hidden" id="no_match_message" style="display:none; text-align:center; margin-top: 20px; "> No item matches your query </h4>
+            {% for menu_item in menu_items %}
+                <li style="list-style: none;">
+                <div class="menu-item">
+                    <div class="menu-item-image">
+                        <img src="{{ menu_item.picture.url }}" alt="{{ menu_item.description }}">
+                    </div>
+                    <div class="menu-item-details">
+                        <h3 class="menu-item-name">{{ menu_item.name }}</h3>
+                        <p>{{ menu_item.description }}</p>
+                        <div class="menu-item-rating">
+                            <p>Average Rating:</p>
+                            {% if menu_item.avg_rating != 0 %}
+                            <p>{{ menu_item.avg_rating }}</p>
+
+                            <div class="stars">
+                                {% for star_value in menu_item.stars_range %}
+                                    {% if menu_item.avg_rating >= star_value  %}
+                                        <span class="filled">&#9733;</span>
+                                    {% else %}
+                                        <span>&#9734;</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% elif menu_item.avg_rating == 0 %}
+                                <p style="color: red;">Not rated yet</p>
+                            {% endif %}
+                        </div>
+
+                        {% if user.is_authenticated %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="menu-item-rating">
+                                    <p>Your Rating:</p>
+                                    {% if menu_item.user_rating == 0 %}
+                                        <p style="color: blue;">You have not rated this item yet</p>
+                                    {% else %}
+                                        <p>{{ menu_item.user_rating }}</p>
+                                    {% endif %}
+
+                                    <div class="stars" data-menu-item-id="{{ menu_item.id }}">
+                                        {% for star_value in menu_item.stars_range %}
+                                        <span class="star" data-value="{{ star_value }}">&#9734;</span>
+                                        {% endfor %}
+                                    </div>
+                                </div> 
+                                
+                                {% if request.user.is_authenticated %}
+                                <input type="hidden" name="menu_item_id" value="{{ menu_item.id }}">
+                                <input type="hidden" id="rating_value_hidden" name="rating" value="">
+                                <button type="submit" id ="rating_submit_btn" style="display: none;">Rate</button>
+                                {% endif %}
+                            </form>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script >
+    
+    // function for login and signup buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        var signinBtn = document.getElementById('signin-btn');
+        var signupBtn = document.getElementById('signup-btn');
+        var loginBox = document.getElementById('login-box');
+        var signupBox = document.getElementById('signup-box');
+        var overlay = document.getElementById('overlay');
+
+        signinBtn.addEventListener('click', function() {
+            loginBox.style.display = 'block';
+            overlay.style.display = 'block';
+            signupBox.style.display = 'none';
+        });
+
+        overlay.addEventListener('click', function() {
+            loginBox.style.display = 'none';
+            overlay.style.display = 'none';
+            signupBox.style.display = 'none';
+        });
+
+        signupBtn.addEventListener('click', function() {
+            loginBox.style.display = 'none';
+            overlay.style.display = 'block';
+            signupBox.style.display = 'block';
+        });
+
+    });
+    
+    
+    
+    var inputElement = document.getElementById("myInput");
+    
+    $(document).ready(function() {
+        
+        // function for searching menu items
+        // Cache the menu list and search bar
+        var $menuList = $('#menu_list');
+        var $searchBar = $('#search_bar');
+        var $noMatchMessage = $('#no_match_message');
+        console.log($noMatchMessage);
+        $noMatchMessage.hide();
+        
+
+        // Listen for changes to the search bar
+        $searchBar.on('input', function() {
+            var query = $searchBar.val().toLowerCase();
+            var noMatch = true;
+
+            // Filter the menu items based on the query
+            $('.menu-item-name').each(function() {
+                var $item = $(this).closest('.menu-item'); // Get the closest parent with class 'menu-item'
+                var name = $(this).text().toLowerCase(); // Get the text content of the menu item name
+
+                if (name.indexOf(query) === -1) {
+                    $item.hide();
+                } else {
+                    $item.show();
+                    noMatch = false;
+                }
+            });
+            if (noMatch) {
+                $noMatchMessage.show();
+            } else {
+                $noMatchMessage.hide();
+            }
+
+        });
+
+
+        // function for hovering over the star buttons
+        $('.star').hover(function() {
+            $(this).prevAll('.star').addBack().html('&#9733;'); // Highlight stars on hover
+            $(this).nextAll('.star').html('&#9734;');
+        }, function() {
+            var menuItemId = $(this).parent().data('menu-item-id');
+            var userRating = $('p[data-menu-item-id="' + menuItemId + '"]').text().trim(); // Get user rating
+            $('.star').each(function() {
+                var starValue = $(this).data('value');
+                if (starValue > userRating) {
+                    $(this).html('&#9734;'); // Reset stars to original state
+                }
+            });
+        });
+
+        // Add pointer cursor on hover
+        $('.star').css('cursor', 'pointer');
+        
+        // function for clicking on the star buttons
+        $('.star').click(function() {
+            var rating = $(this).data('value');
+            var form = $(this).closest('form');
+
+            form.find('input[name="rating"]').val(rating);
+            form.find('#rating_submit_btn').click();
+            
+        });
+    });
+</script>
+</html>

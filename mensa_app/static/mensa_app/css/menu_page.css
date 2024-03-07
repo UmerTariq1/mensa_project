@@ -1,0 +1,209 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+  }
+  
+.central_box {
+  width: 75%;
+  margin: 0 auto;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.search_bar {
+  width: 300px;
+  margin: 0 auto; /* Center the search bar */
+  padding: 10px; /* Adjust padding for better spacing */
+  font-size: 16px;
+  border: none; /* Remove default border */
+  border-radius: 20px; /* Round the corners */
+  background-color: #f2f2f2; /* Light gray background color */
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1); /* Add subtle box shadow */
+  outline: 2px solid black; 
+  display: block; 
+}
+
+.search_bar::placeholder {
+  color: #999; /* Light gray placeholder text color */
+}
+
+/* Style on focus */
+.search_bar:focus {
+  border: 2px solid #4CAF50; /* Green border color on focus */
+  box-shadow: 0 8px 16px rgba(237, 8, 8, 0.1); /* Adjust box shadow on focus */
+}
+
+.menu-item {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+  height: 200px; /* Adjust the height as needed */
+}
+.menu-item:hover {
+  background-color: #d0c8c8;
+  box-shadow: 3 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-image {
+  width: 25%;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Ensures the image maintains its aspect ratio */
+}
+
+.menu-item-details {
+  width: 66.66%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.menu-item-details h3 {
+  margin-top: 0;
+}
+
+.menu-item-rating {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.menu-item-rating p {
+  margin: 0;
+}
+
+.stars {
+  display: inline-block;
+  font-size: 1.5rem;
+}
+
+.filled {
+  color: #f5a623;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+.rating-form {
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+.login-box {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f0f0f0;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  z-index: 1000; /* Ensure login box is above other content */
+}
+.login-box input[type="text"],
+.login-box input[type="password"] {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.login-box button[type="submit"] {
+  width: 100%;
+}
+
+.signup-box {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f9f9f9; /* Light gray background color */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  z-index: 1000; /* Ensure signup box is above other content */
+  width: 50%; /* Adjust width */
+  max-width: 80%; /* Maximum width */
+}
+
+.signup-box input[type="text"],
+.signup-box input[type="password"] {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 16px;
+}
+
+.signup-box button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50; /* Green background color */
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s; /* Add smooth transition */
+}
+
+/* Hover effect for submit button */
+.signup-box button[type="submit"]:hover {
+  background-color: #45a049; /* Darker green background color on hover */
+}
+
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  z-index: 999; /* Ensure overlay is below login box but above other content */
+}
+
+.signin_btn, .signup_btn {
+  background-color: #517851; /* Green background color */
+  border: none; /* Remove border */
+  color: white; /* White text color */
+  padding: 10px 20px; /* Add padding */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Add cursor pointer */
+  border-radius: 5px; /* Add border radius */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
+  position: absolute; /* Absolute positioning */
+  top: 20px; /* Adjust top position */
+  right: 12%; /* Adjust right position */
+  margin-top: 10px; /* Add margin between the buttons */
+}
+
+.signup_btn {
+  top: 10%; /* Adjust top position for the second button */
+}
+
+/* Add a hover effect (green background color) */
+.signin_btn:hover, .signup_btn:hover {
+  background-color: #3e8e3e;
+}
